@@ -9,19 +9,27 @@ import SwiftUI
 
 struct ShopView: View {
     var body: some View {
-        CategoryView()
+        NavigationView {
+            ScrollView(.horizontal, showsIndicators: false, content: {
+                HStack(spacing: 50) {
+                    CategoryView()
+                    CategoryView()
+                    CategoryView()
+                    CategoryView()
+                }
+            })
+            .navigationBarTitle(Text("Categories"))
+        }
     }
 }
 
 struct CategoryView: View {
+    var categories: [Category] = [
+        Category(name: "Hats", imageName: "CatHats"),
+        Category(name: "Shoes", imageName: "CatShoes")]
     var body: some View {
-        NavigationView {
-            List {
-               Text("Hello")
-                
-            }
-            .navigationBarTitle(Text("Categories"))
-        }
+        Rectangle()
+            .frame(width: 200.0, height: 200.0)
     }
 }
 
