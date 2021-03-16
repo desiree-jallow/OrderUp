@@ -7,7 +7,8 @@
 
 import SwiftUI
 
-struct Category {
+struct Category: Identifiable {
+    var id: Int
     var name: String
     var imageName: String
 }
