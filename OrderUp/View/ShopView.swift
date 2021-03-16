@@ -9,18 +9,43 @@ import SwiftUI
 
 struct ShopView: View {
     var body: some View {
-        NavigationView {
-            ScrollView(.horizontal, showsIndicators: false, content: {
-                HStack(spacing: 20) {
-                    ForEach(categories) { category in
-                        CategoryView(category: category)
+        VStack {
+            NavigationView {
+                ScrollView(.horizontal, showsIndicators: false, content: {
+                    HStack(spacing: 20) {
+                        ForEach(categories) { category in
+                            CategoryView(category: category)
+                        }
                     }
+                })
+                
+                .frame(height: 190)
+                .offset(x: 10.0, y: -30)
+                .navigationBarTitle(Text("Categories"))
+                .navigationBarItems(trailing: CartView(cartItems: shopItems.count))
+            }
+            
+            ItemsView()
+                
+        }
+    }
+}
+
+struct ItemsView: View {
+    var body: some View {
+        List(shopItems) { item in
+            VStack(alignment: .leading) {
+                    Image(item.imageName)
+                        .resizable()
+                        .aspectRatio(1, contentMode: .fit)
+                        .frame(width: 140, height: 140)
+                        .clipped()
+                        .background(RoundedRectangle(cornerRadius: 10), alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                        .foregroundColor(.gray)
+                
+                    Text(item.name)
+                        .fontWeight(.bold)
                 }
-            })
-            .frame(height: 190)
-            .offset(x: 10.0, y: -200)
-            .navigationBarTitle(Text("Categories"))
-            .navigationBarItems(trailing: CartView(cartItems: <#Int#>))
         }
     }
 }
@@ -32,7 +57,8 @@ struct CartView: View {
             Image("cart")
                 .resizable()
                 .aspectRatio(1, contentMode: .fit)
-                .frame(maxWidth: 50)
+                .frame(maxWidth: 100)
+                .offset(x: 30, y: 10)
             ZStack {
                 Circle()
                     .fill(Color.red)
@@ -41,7 +67,7 @@ struct CartView: View {
                     .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                     .foregroundColor(Color.white)
             }
-            .offset(x: 20.0, y: /*@START_MENU_TOKEN@*/10.0/*@END_MENU_TOKEN@*/)
+            .offset(x: 45.0, y: 20)
             .opacity(cartItems > 0 ? 1.0 : 0)
         }
     }
@@ -61,6 +87,7 @@ struct CategoryView: View {
             
             Image(category.imageName)
                 .resizable()
+                .aspectRatio(contentMode: .fill)
                 .frame(width: 140, height: 140)
                 .cornerRadius(10.0)
                 .offset(x: -5,y: -10)
