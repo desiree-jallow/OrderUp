@@ -8,11 +8,6 @@
 import SwiftUI
 
 struct ShopView: View {
-    var categories: [Category] = [
-        Category(id: 1, name: "Hats", imageName: "catHats"),
-        Category(id: 2, name: "Shoes", imageName: "catShoes"),
-        Category(id: 3, name: "Jewelry", imageName: "catJewelry"),
-        Category(id: 4, name: "Dresses", imageName: "catDresses")]
     var body: some View {
         NavigationView {
             ScrollView(.horizontal, showsIndicators: false, content: {
@@ -25,6 +20,29 @@ struct ShopView: View {
             .frame(height: 190)
             .offset(x: 10.0, y: -200)
             .navigationBarTitle(Text("Categories"))
+            .navigationBarItems(trailing: CartView(cartItems: <#Int#>))
+        }
+    }
+}
+
+struct CartView: View {
+    var cartItems: Int
+    var body: some View {
+        ZStack {
+            Image("cart")
+                .resizable()
+                .aspectRatio(1, contentMode: .fit)
+                .frame(maxWidth: 50)
+            ZStack {
+                Circle()
+                    .fill(Color.red)
+                    .frame(maxWidth: 30)
+                Text("\(cartItems)")
+                    .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                    .foregroundColor(Color.white)
+            }
+            .offset(x: 20.0, y: /*@START_MENU_TOKEN@*/10.0/*@END_MENU_TOKEN@*/)
+            .opacity(cartItems > 0 ? 1.0 : 0)
         }
     }
 }
