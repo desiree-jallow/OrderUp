@@ -19,34 +19,86 @@ struct ShopView: View {
                     }
                 })
                 
-                .frame(height: 190)
-                .offset(x: 10.0, y: -30)
+                .offset(x: 10)
                 .navigationBarTitle(Text("Categories"))
                 .navigationBarItems(trailing: CartView(cartItems: shopItems.count))
             }
             
             ItemsView()
-                
+            
         }
     }
 }
 
 struct ItemsView: View {
     var body: some View {
+        Text("Hats")
+            .font(.largeTitle)
+            .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+            .offset(x: -140, y: 10.0)
+            
+    
         List(shopItems) { item in
-            VStack(alignment: .leading) {
+            VStack {
+                HStack {
                     Image(item.imageName)
                         .resizable()
                         .aspectRatio(1, contentMode: .fit)
                         .frame(width: 140, height: 140)
                         .clipped()
-                        .background(RoundedRectangle(cornerRadius: 10), alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                        .background(RoundedRectangle(cornerRadius: 10), alignment: .center)
                         .foregroundColor(.gray)
-                
-                    Text(item.name)
-                        .fontWeight(.bold)
+                        .padding(.trailing)
+                        .position(x: 110, y: 75)
+                        
+                    DescriptionView(item: item)
+    
                 }
+                
+                Spacer(minLength: 10)
+            }
+            
         }
+        .frame(width: 500, height: 350, alignment: .topLeading)
+    }
+}
+
+struct DescriptionView: View {
+    var item: ShopItem
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text(item.name)
+                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                
+            Text(item.description)
+                .foregroundColor(.gray)
+                .font(.caption)
+            
+            HStack {
+                
+                Text("$\(String(format: "%.2f", item.price))")
+                    .fontWeight(.bold)
+                    .foregroundColor(.red)
+                    .padding(.top)
+                    
+                Spacer(minLength: 30)
+                
+                Button(action: /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Action@*/{}/*@END_MENU_TOKEN@*/) {
+                    
+                    Text("add to cart")
+                        .padding(.all, 6.0)
+                        .foregroundColor(.white)
+                        .font(.body)
+                        .background(Rectangle())
+                        .cornerRadius(10)
+                        .frame(width: 120, height: 10, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                        .foregroundColor(.red)
+                }
+                
+            }
+           
+        }
+        .offset(x: -50, y: /*@START_MENU_TOKEN@*/10.0/*@END_MENU_TOKEN@*/)
     }
 }
 
