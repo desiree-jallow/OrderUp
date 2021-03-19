@@ -39,8 +39,8 @@ struct ItemsView: View {
             .font(.largeTitle)
             .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
             .offset(x: -155, y: 25.0)
-            
-    
+        
+        
         List(shopItems) { item in
             VStack {
                 HStack {
@@ -53,9 +53,9 @@ struct ItemsView: View {
                         .foregroundColor(.gray)
                         .padding(.trailing)
                         .position(x: 110, y: 75)
-                        
+                    
                     DescriptionView(item: item)
-    
+                    
                 }
                 
                 Spacer(minLength: 10)
@@ -66,19 +66,16 @@ struct ItemsView: View {
     }
     
 }
-    
-    
+
 struct DescriptionView: View {
     @State var showStepper = false
-    @State var button = ButtonView()
-    @State var stepper = StepperView()
-    @State var inCart = false
+    @State var opacity: Double = 0
     var item: ShopItem
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(item.name)
                 .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                
+            
             Text(item.description)
                 .foregroundColor(.gray)
                 .font(.caption)
@@ -89,42 +86,41 @@ struct DescriptionView: View {
                     .fontWeight(.bold)
                     .foregroundColor(.red)
                     .padding(.top)
-                    
-                Spacer(minLength: 30)
                 
+                Spacer(minLength: 30)
                 
                 ButtonView()
                     .opacity(showStepper ? 0 : 1)
                     .onTapGesture {
                         showStepper = true
+                        opacity = 1
                         
-                        print("working")
                     }
+                
             }
-            
             StepperView()
                 .opacity(showStepper ? 1 : 0)
                 .offset(x: -10, y: -42)
-                
-          
+            
         }
         .offset(x: -50, y: /*@START_MENU_TOKEN@*/10.0/*@END_MENU_TOKEN@*/)
     }
     
 }
-    
-
 
 struct StepperView: View {
+    @State var button = ButtonView()
     @State var stepperValue: Int = 1
     var body: some View {
+        
         ZStack {
             RoundedRectangle(cornerRadius: 10)
                 .frame(width: 100, height: 35, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
                 .offset(x: 130, y: 5)
                 .foregroundColor(Color(.lightGray))
             
-            HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 15) {
+            HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 15)
+            {
                 Text("-")
                     .fontWeight(.bold)
                     .padding(.all, 6)
@@ -136,10 +132,10 @@ struct StepperView: View {
                             stepperValue -= 1
                         }
                     }
-             
+                
                 Text("\(stepperValue)")
                     .fontWeight(.bold)
-             
+                
                 Text("+")
                     .fontWeight(.bold)
                     .padding(.all, 6)
@@ -150,12 +146,15 @@ struct StepperView: View {
                         stepperValue += 1
                     }
             }
+            
             .offset(x: 130, y: 5)
         }
-
-   }
+        .opacity(stepperValue < 1 ? 0 : 1)
+    }
+    
 }
 struct ButtonView: View {
+    @State var stepperValue: Int = 1
     var body: some View {
         Text("add to cart")
             .padding(.all, 6.0)
@@ -166,9 +165,9 @@ struct ButtonView: View {
             .frame(width: 120, height: 10, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
             .foregroundColor(.red)
             .offset(x: 10, y: 10)
-            
+        
     }
-   
+    
 }
 struct CartView: View {
     var cartItems: Int
@@ -214,9 +213,6 @@ struct CategoryView: View {
         }
     }
 }
-
-
-
 
 struct ShopView_Previews: PreviewProvider {
     static var previews: some View {
