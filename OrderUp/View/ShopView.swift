@@ -118,17 +118,41 @@ struct DescriptionView: View {
 struct StepperView: View {
     @State var stepperValue: Int = 1
     var body: some View {
-        RoundedRectangle(cornerRadius: 10)
-            .frame(width: 100, height: 35, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+        ZStack {
+            RoundedRectangle(cornerRadius: 10)
+                .frame(width: 100, height: 35, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                .offset(x: 130, y: 5)
+                .foregroundColor(Color(.lightGray))
+            
+            HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 15) {
+                Text("-")
+                    .fontWeight(.bold)
+                    .padding(.all, 6)
+                    .foregroundColor(.red)
+                    .background(Circle())
+                    .foregroundColor(.white)
+                    .onTapGesture {
+                        if stepperValue > 0 {
+                            stepperValue -= 1
+                        }
+                    }
+             
+                Text("\(stepperValue)")
+                    .fontWeight(.bold)
+             
+                Text("+")
+                    .fontWeight(.bold)
+                    .padding(.all, 6)
+                    .foregroundColor(.red)
+                    .background(Circle())
+                    .foregroundColor(.white)
+                    .onTapGesture {
+                        stepperValue += 1
+                    }
+            }
             .offset(x: 130, y: 5)
-//        Stepper("\(stepperValue)") {
-//            stepperValue += 1
-//        } onDecrement: {
-//            if stepperValue > 0 {
-//                stepperValue -= 1
-//            }
-//
-//        }
+        }
+
    }
 }
 struct ButtonView: View {
