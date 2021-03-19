@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ShopView: View {
+    @State private var cartItems: Dictionary<Int,ShopItem> = [:]
     var body: some View {
         VStack {
             NavigationView {
@@ -21,21 +22,23 @@ struct ShopView: View {
                 
                 .offset(x: 10)
                 .navigationBarTitle(Text("Categories"))
-                .navigationBarItems(trailing: CartView(cartItems: shopItems.count))
+                .navigationBarItems(trailing: CartView(cartItems: cartItems.count))
             }
             
-            ItemsView()
+            ItemsView(inCart: true)
             
         }
+        
     }
 }
 
 struct ItemsView: View {
+    var inCart: Bool
     var body: some View {
         Text("Hats")
             .font(.largeTitle)
             .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-            .offset(x: -140, y: 10.0)
+            .offset(x: -155, y: 25.0)
             
     
         List(shopItems) { item in
@@ -61,9 +64,15 @@ struct ItemsView: View {
         }
         .frame(width: 500, height: 350, alignment: .topLeading)
     }
+    
 }
-
+    
+    
 struct DescriptionView: View {
+    @State var showStepper = false
+    @State var button = ButtonView()
+    @State var stepper = StepperView()
+    @State var inCart = false
     var item: ShopItem
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -83,25 +92,60 @@ struct DescriptionView: View {
                     
                 Spacer(minLength: 30)
                 
-                Button(action: /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Action@*/{}/*@END_MENU_TOKEN@*/) {
-                    
-                    Text("add to cart")
-                        .padding(.all, 6.0)
-                        .foregroundColor(.white)
-                        .font(.body)
-                        .background(Rectangle())
-                        .cornerRadius(10)
-                        .frame(width: 120, height: 10, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                        .foregroundColor(.red)
-                }
                 
+                ButtonView()
+                    .opacity(showStepper ? 0 : 1)
+                    .onTapGesture {
+                        showStepper = true
+                        
+                        print("working")
+                    }
             }
-           
+            
+            StepperView()
+                .opacity(showStepper ? 1 : 0)
+                .offset(x: -10, y: -42)
+                
+          
         }
         .offset(x: -50, y: /*@START_MENU_TOKEN@*/10.0/*@END_MENU_TOKEN@*/)
     }
+    
 }
+    
 
+
+struct StepperView: View {
+    @State var stepperValue: Int = 1
+    var body: some View {
+        RoundedRectangle(cornerRadius: 10)
+            .frame(width: 100, height: 35, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+            .offset(x: 130, y: 5)
+//        Stepper("\(stepperValue)") {
+//            stepperValue += 1
+//        } onDecrement: {
+//            if stepperValue > 0 {
+//                stepperValue -= 1
+//            }
+//
+//        }
+   }
+}
+struct ButtonView: View {
+    var body: some View {
+        Text("add to cart")
+            .padding(.all, 6.0)
+            .foregroundColor(.white)
+            .font(.body)
+            .background(Rectangle())
+            .cornerRadius(10)
+            .frame(width: 120, height: 10, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+            .foregroundColor(.red)
+            .offset(x: 10, y: 10)
+            
+    }
+   
+}
 struct CartView: View {
     var cartItems: Int
     var body: some View {
@@ -110,7 +154,7 @@ struct CartView: View {
                 .resizable()
                 .aspectRatio(1, contentMode: .fit)
                 .frame(maxWidth: 100)
-                .offset(x: 30, y: 10)
+                .offset(x: 40, y: 10)
             ZStack {
                 Circle()
                     .fill(Color.red)
@@ -146,6 +190,8 @@ struct CategoryView: View {
         }
     }
 }
+
+
 
 
 struct ShopView_Previews: PreviewProvider {
