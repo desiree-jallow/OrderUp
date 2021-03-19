@@ -58,7 +58,6 @@ struct ItemsView: View {
                     
                 }
                 
-                Spacer(minLength: 10)
             }
             
         }
@@ -69,7 +68,6 @@ struct ItemsView: View {
 
 struct DescriptionView: View {
     @State var showStepper = false
-    @State var opacity: Double = 0
     var item: ShopItem
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -93,11 +91,10 @@ struct DescriptionView: View {
                     .opacity(showStepper ? 0 : 1)
                     .onTapGesture {
                         showStepper = true
-                        opacity = 1
-                        
                     }
                 
             }
+            
             StepperView()
                 .opacity(showStepper ? 1 : 0)
                 .offset(x: -10, y: -42)
