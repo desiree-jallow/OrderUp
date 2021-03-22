@@ -27,6 +27,7 @@ struct ShopView: View {
             
             ItemsView(inCart: true)
             
+            
         }
         
     }
@@ -35,24 +36,26 @@ struct ShopView: View {
 struct ItemsView: View {
     var inCart: Bool
     var body: some View {
-        Text("Hats")
-            .font(.largeTitle)
-            .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-            .offset(x: -155, y: 25.0)
-        
+        HStack {
+            
+            Text("Hats")
+                .font(.largeTitle)
+                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                .padding(.leading)
+            Spacer()
+        }
         
         List(shopItems) { item in
             VStack {
-                HStack {
+                HStack(alignment: .top) {
                     Image(item.imageName)
                         .resizable()
                         .aspectRatio(1, contentMode: .fit)
-                        .frame(width: 140, height: 140)
+                        .frame(width: 100, height: 100)
                         .clipped()
                         .background(RoundedRectangle(cornerRadius: 10), alignment: .center)
                         .foregroundColor(.gray)
-                        .padding(.trailing)
-                        .position(x: 110, y: 75)
+//                        .position(x: 110, y: 75)
                     
                     DescriptionView(item: item)
                     
@@ -61,46 +64,54 @@ struct ItemsView: View {
             }
             
         }
-        .frame(width: 500, height: 350, alignment: .topLeading)
+        
     }
     
 }
 
 struct DescriptionView: View {
     @State var showStepper = false
+    @State var stepperValue = 1
     var item: ShopItem
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text(item.name)
-                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-            
-            Text(item.description)
-                .foregroundColor(.gray)
-                .font(.caption)
-            
+        VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 10) {
+                Text(item.name)
+                    .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                
+                Text(item.description)
+                    .foregroundColor(.gray)
+                    .font(.caption)
+            }
+           
             HStack {
                 
                 Text("$\(String(format: "%.2f", item.price))")
                     .fontWeight(.bold)
                     .foregroundColor(.red)
                     .padding(.top)
+                    .padding(.trailing)
+                  
                 
-                Spacer(minLength: 30)
-                
-                ButtonView()
-                    .opacity(showStepper ? 0 : 1)
-                    .onTapGesture {
-                        showStepper = true
-                    }
-                
+                if !showStepper {
+                    ButtonView()
+                        .opacity(showStepper ? 0 : 1)
+                        .padding(.trailing, 2)
+                        .onTapGesture {
+                            showStepper = true
+                        }
+                } else {
+                    StepperView()
+                   
+                }
+                   
+                    
             }
-            
-            StepperView()
-                .opacity(showStepper ? 1 : 0)
-                .offset(x: -10, y: -42)
-            
+            .padding(.bottom)
+
         }
-        .offset(x: -50, y: /*@START_MENU_TOKEN@*/10.0/*@END_MENU_TOKEN@*/)
+        
+        .frame(width: UIScreen.main.bounds.width / 1.75)
     }
     
 }
@@ -113,7 +124,6 @@ struct StepperView: View {
         ZStack {
             RoundedRectangle(cornerRadius: 10)
                 .frame(width: 100, height: 35, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                .offset(x: 130, y: 5)
                 .foregroundColor(Color(.lightGray))
             
             HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 15)
@@ -144,14 +154,15 @@ struct StepperView: View {
                     }
             }
             
-            .offset(x: 130, y: 5)
         }
+        .padding(.leading)
+        .padding(.top)
         .opacity(stepperValue < 1 ? 0 : 1)
+        
     }
     
 }
 struct ButtonView: View {
-    @State var stepperValue: Int = 1
     var body: some View {
         Text("add to cart")
             .padding(.all, 6.0)
