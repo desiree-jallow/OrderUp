@@ -27,7 +27,6 @@ struct ShopView: View {
             
             ItemsView(inCart: true)
             
-            
         }
         
     }
@@ -55,9 +54,9 @@ struct ItemsView: View {
                         .clipped()
                         .background(RoundedRectangle(cornerRadius: 10), alignment: .center)
                         .foregroundColor(.gray)
-//                        .position(x: 110, y: 75)
+                    //                        .position(x: 110, y: 75)
                     
-                    DescriptionView(item: item)
+                    DescriptionView(showStepper: false, item: item)
                     
                 }
                 
@@ -70,7 +69,7 @@ struct ItemsView: View {
 }
 
 struct DescriptionView: View {
-    @State var showStepper = false
+    @State var showStepper: Bool
     var item: ShopItem
     var body: some View {
         VStack(alignment: .leading) {
@@ -82,7 +81,7 @@ struct DescriptionView: View {
                     .foregroundColor(.gray)
                     .font(.caption)
             }
-           
+            
             HStack {
                 
                 Text("$\(String(format: "%.2f", item.price))")
@@ -90,73 +89,76 @@ struct DescriptionView: View {
                     .foregroundColor(.red)
                     .padding(.top)
                     .padding(.trailing)
-                  
                 
-                if !showStepper {
-                    ButtonView()
-                        .padding(.trailing, 2)
-                        .opacity(showStepper ? 0 : 1)
-                        .onTapGesture {
-                            showStepper.toggle()
-                        }
-                } else {
-                    
-                    StepperView()
-                    
-                }
+                ToggleView()
+                
             }
             .padding(.bottom)
         }
         .frame(width: UIScreen.main.bounds.width / 1.75)
     }
+    
+    
 }
 
-struct StepperView: View {
-    @State var stepperValue: Int = 1
+struct ToggleView: View {
+    @State var stepperValue: Int = 0
+    @State var showStepper: Bool = false
     var body: some View {
-        
-        ZStack {
-            RoundedRectangle(cornerRadius: 10)
-                .frame(width: 100, height: 35, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                .foregroundColor(Color(.lightGray))
-            
-            HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 15)
-            {
-                Text("-")
-                    .fontWeight(.bold)
-                    .padding(.all, 6)
-                    .foregroundColor(.red)
-                    .background(Circle())
-                    .foregroundColor(.white)
-                    .onTapGesture {
-                        if stepperValue > 0 {
-                            stepperValue -= 1
+        if stepperValue < 1 || !showStepper {
+            ButtonView()
+                .onTapGesture {
+                    showStepper = true
+                    stepperValue += 1
+                }
+        } else {
+            ZStack {
+                RoundedRectangle(cornerRadius: 10)
+                    .frame(width: 100, height: 35, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                    .foregroundColor(Color(.lightGray))
+                
+                HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 15)
+                {
+                    Text("-")
+                        .fontWeight(.bold)
+                        .padding(.all, 6)
+                        .foregroundColor(.red)
+                        .background(Circle())
+                        .foregroundColor(.white)
+                        .onTapGesture {
+                            if stepperValue > 0 {
+                                stepperValue -= 1
+                            } else {
+                                showStepper = false
+                            }
                         }
-                    }
+                    
+                    Text("\(stepperValue)")
+                        .fontWeight(.bold)
+                    
+                    Text("+")
+                        .fontWeight(.bold)
+                        .padding(.all, 6)
+                        .foregroundColor(.red)
+                        .background(Circle())
+                        .foregroundColor(.white)
+                        .onTapGesture {
+                            stepperValue += 1
+                        }
+                }
                 
-                Text("\(stepperValue)")
-                    .fontWeight(.bold)
-                
-                Text("+")
-                    .fontWeight(.bold)
-                    .padding(.all, 6)
-                    .foregroundColor(.red)
-                    .background(Circle())
-                    .foregroundColor(.white)
-                    .onTapGesture {
-                        stepperValue += 1
-                    }
             }
+            .padding(.leading)
+            .padding(.top)
+            .opacity(stepperValue < 1 ? 0 : 1)
             
         }
-        .padding(.leading)
-        .padding(.top)
-        .opacity(stepperValue < 1 ? 0 : 1)
     }
     
-    
 }
+
 struct ButtonView: View {
+    
     var body: some View {
         Text("add to cart")
             .padding(.all, 6.0)
@@ -167,6 +169,7 @@ struct ButtonView: View {
             .frame(width: 120, height: 10, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
             .foregroundColor(.red)
             .offset(x: 10, y: 10)
+        
     }
     
 }
