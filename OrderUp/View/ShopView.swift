@@ -71,7 +71,6 @@ struct ItemsView: View {
 
 struct DescriptionView: View {
     @State var showStepper = false
-    @State var stepperValue = 1
     var item: ShopItem
     var body: some View {
         VStack(alignment: .leading) {
@@ -95,29 +94,24 @@ struct DescriptionView: View {
                 
                 if !showStepper {
                     ButtonView()
-                        .opacity(showStepper ? 0 : 1)
                         .padding(.trailing, 2)
+                        .opacity(showStepper ? 0 : 1)
                         .onTapGesture {
-                            showStepper = true
+                            showStepper.toggle()
                         }
                 } else {
-                    StepperView()
-                   
-                }
-                   
                     
+                    StepperView()
+                    
+                }
             }
             .padding(.bottom)
-
         }
-        
         .frame(width: UIScreen.main.bounds.width / 1.75)
     }
-    
 }
 
 struct StepperView: View {
-    @State var button = ButtonView()
     @State var stepperValue: Int = 1
     var body: some View {
         
@@ -158,8 +152,8 @@ struct StepperView: View {
         .padding(.leading)
         .padding(.top)
         .opacity(stepperValue < 1 ? 0 : 1)
-        
     }
+    
     
 }
 struct ButtonView: View {
@@ -173,10 +167,10 @@ struct ButtonView: View {
             .frame(width: 120, height: 10, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
             .foregroundColor(.red)
             .offset(x: 10, y: 10)
-        
     }
     
 }
+
 struct CartView: View {
     var cartItems: Int
     var body: some View {
