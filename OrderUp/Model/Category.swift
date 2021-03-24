@@ -7,15 +7,15 @@
 
 import SwiftUI
 
-struct Category: Identifiable {
-    var id: Int
-    var name: String
-    var imageName: String
+struct ShopCategory: Identifiable {
+    var id: Int = 5
+    var categoryName: String = ""
+    var imageName: String = ""
     
 }
 
-let categories: [Category] = [
-    Category(id: 1, name: "Hats", imageName: "catHats"),
-    Category(id: 2, name: "Shoes", imageName: "catShoes"),
-    Category(id: 3, name: "Jewelry", imageName: "catJewelry"),
-    Category(id: 4, name: "Dresses", imageName: "catDresses")]
+let categories: [ShopCategory] = [
+    ShopCategory(id: 1, categoryName: "Hats", imageName: "catHats"),
+    ShopCategory(id: 2, categoryName: "Shoes", imageName: "catShoes"),
+    ShopCategory(id: 3, categoryName: "Jewelry", imageName: "catJewelry"),
+    ShopCategory(id: 4, categoryName: "Dresses", imageName: "catDresses")]

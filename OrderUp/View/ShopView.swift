@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ShopView: View {
     @State private var cartItems: Dictionary<Int,ShopItem> = [:]
+    @State private var category = ShopCategory()
     var body: some View {
         VStack {
             NavigationView {
@@ -16,6 +17,10 @@ struct ShopView: View {
                     HStack(spacing: 20) {
                         ForEach(categories) { category in
                             CategoryView(category: category)
+                                .onTapGesture {
+                                    self.category = category
+                                    
+                                }
                         }
                     }
                 })
@@ -25,8 +30,7 @@ struct ShopView: View {
                 .navigationBarItems(trailing: CartView(cartItems: cartItems.count))
             }
             
-            ItemsView(inCart: true)
-            
+            ItemsView(inCart: true, category: category)
         }
         
     }
@@ -34,17 +38,18 @@ struct ShopView: View {
 
 struct ItemsView: View {
     var inCart: Bool
+    var category: ShopCategory
     var body: some View {
         HStack {
             
-            Text("Hats")
+            Text(category.categoryName == "" ? "Hats" : category.categoryName)
                 .font(.largeTitle)
                 .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                 .padding(.leading)
             Spacer()
         }
         
-        List(shopItems) { item in
+        List(getItems(for: category, items: shopItems)) { item in
             VStack {
                 HStack(alignment: .top) {
                     Image(item.imageName)
@@ -54,9 +59,8 @@ struct ItemsView: View {
                         .clipped()
                         .background(RoundedRectangle(cornerRadius: 10), alignment: .center)
                         .foregroundColor(.gray)
-                    //                        .position(x: 110, y: 75)
                     
-                    DescriptionView(showStepper: false, item: item)
+                    DescriptionView(item: item)
                     
                 }
                 
@@ -66,15 +70,30 @@ struct ItemsView: View {
         
     }
     
+    
+    private func getItems(for category: ShopCategory, items : [ShopItem]) -> [ShopItem] {
+        var newArray: [ShopItem] = [ShopItem]()
+        
+        for item in items {
+            if category.categoryName == "" && item.itemCategory == "Hats" {
+                newArray.append(item)
+            } else if item.itemCategory == category.categoryName {
+                newArray.append(item)
+        }
+        
+    }
+        return newArray
+}
+    
 }
 
 struct DescriptionView: View {
-    @State var showStepper: Bool
+    @State private var showStepper: Bool = false
     var item: ShopItem
     var body: some View {
         VStack(alignment: .leading) {
             VStack(alignment: .leading, spacing: 10) {
-                Text(item.name)
+                Text(item.itemName)
                     .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                 
                 Text(item.description)
@@ -102,8 +121,8 @@ struct DescriptionView: View {
 }
 
 struct ToggleView: View {
-    @State var stepperValue: Int = 0
-    @State var showStepper: Bool = false
+    @State private var stepperValue: Int = 0
+    @State private var showStepper: Bool = false
     var body: some View {
         if stepperValue < 1 || !showStepper {
             ButtonView()
@@ -198,14 +217,14 @@ struct CartView: View {
 }
 
 struct CategoryView: View {
-    var category: Category
+    var category: ShopCategory
     var body: some View {
         ZStack {
             VStack {
                 Rectangle()
                     .frame(width: 150.0, height: 150.0)
                     .cornerRadius(/*@START_MENU_TOKEN@*/10.0/*@END_MENU_TOKEN@*/)
-                Text(category.name)
+                Text(category.categoryName)
                     .fontWeight(.bold)
             }
             
@@ -216,6 +235,7 @@ struct CategoryView: View {
                 .cornerRadius(10.0)
                 .offset(x: -5,y: -10)
         }
+       
     }
 }
 
@@ -224,3 +244,4 @@ struct ShopView_Previews: PreviewProvider {
         ShopView()
     }
 }
+
