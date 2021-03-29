@@ -19,7 +19,7 @@ struct ShopView: View {
                             CategoryView(category: category)
                                 .onTapGesture {
                                     self.category = category
-                                    
+                                
                                 }
                         }
                     }
@@ -30,14 +30,17 @@ struct ShopView: View {
                 .navigationBarItems(trailing: CartView(cartItems: cartItems.count))
             }
             
-            ItemsView(inCart: true, category: category)
+            ItemsView(category: category)
         }
         
     }
+
 }
 
+
 struct ItemsView: View {
-    var inCart: Bool
+    @State private var cartItems: Dictionary<Int,ShopItem> = [:]
+    @State var items: [ShopItem] = []
     var category: ShopCategory
     var body: some View {
         HStack {
@@ -46,10 +49,11 @@ struct ItemsView: View {
                 .font(.largeTitle)
                 .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                 .padding(.leading)
+            
             Spacer()
         }
         
-        List(getItems(for: category, items: shopItems)) { item in
+        List(getItems(for: category)) { item in
             VStack {
                 HStack(alignment: .top) {
                     Image(item.imageName)
@@ -59,36 +63,34 @@ struct ItemsView: View {
                         .clipped()
                         .background(RoundedRectangle(cornerRadius: 10), alignment: .center)
                         .foregroundColor(.gray)
-                    
+                
                     DescriptionView(item: item)
+                    }
                     
                 }
                 
             }
             
         }
-        
-    }
-    
-    
-    private func getItems(for category: ShopCategory, items : [ShopItem]) -> [ShopItem] {
-        var newArray: [ShopItem] = [ShopItem]()
-        
-        for item in items {
-            if category.categoryName == "" && item.itemCategory == "Hats" {
-                newArray.append(item)
-            } else if item.itemCategory == category.categoryName {
-                newArray.append(item)
+    private func getItems(for category: ShopCategory) -> [ShopItem] {
+        if category.categoryName == "" {
+            return shopItems.filter { (item) -> Bool in
+                item.itemCategory == "Hats"
+            }
+        } else {
+            return shopItems.filter { (item) -> Bool in
+                 item.itemCategory == category.categoryName
+            }
         }
+      
         
     }
-        return newArray
-}
-    
+
 }
 
 struct DescriptionView: View {
     @State private var showStepper: Bool = false
+    @State private var stepperValue: Int = 0
     var item: ShopItem
     var body: some View {
         VStack(alignment: .leading) {
@@ -108,73 +110,75 @@ struct DescriptionView: View {
                     .foregroundColor(.red)
                     .padding(.top)
                     .padding(.trailing)
-                
-                ToggleView()
-                
+            
+                ToggleView(showStepper: $showStepper, stepperValue: $stepperValue)
             }
             .padding(.bottom)
         }
         .frame(width: UIScreen.main.bounds.width / 1.75)
     }
     
-    
 }
 
 struct ToggleView: View {
-    @State private var stepperValue: Int = 0
-    @State private var showStepper: Bool = false
+    @Binding var showStepper: Bool
+    @Binding var stepperValue: Int
     var body: some View {
+      
         if stepperValue < 1 || !showStepper {
-            ButtonView()
-                .onTapGesture {
-                    showStepper = true
-                    stepperValue += 1
-                }
-        } else {
-            ZStack {
-                RoundedRectangle(cornerRadius: 10)
-                    .frame(width: 100, height: 35, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                    .foregroundColor(Color(.lightGray))
-                
-                HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 15)
-                {
-                    Text("-")
-                        .fontWeight(.bold)
-                        .padding(.all, 6)
-                        .foregroundColor(.red)
-                        .background(Circle())
-                        .foregroundColor(.white)
-                        .onTapGesture {
-                            if stepperValue > 0 {
-                                stepperValue -= 1
-                            } else {
-                                showStepper = false
+                ButtonView()
+                    .onTapGesture {
+                        showStepper = true
+                        stepperValue += 1
+                    }
+            } else {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 10)
+                        .frame(width: 100, height: 35, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                        .foregroundColor(Color(.lightGray))
+                    
+                    HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 15)
+                    {
+                        Text("-")
+                            .fontWeight(.bold)
+                            .padding(.all, 6)
+                            .foregroundColor(.red)
+                            .background(Circle())
+                            .foregroundColor(.white)
+                            .onTapGesture {
+                                if stepperValue > 0 {
+                                    stepperValue -= 1
+                                } else {
+                                    showStepper = false
+                                 
+                                }
                             }
-                        }
+                        
+                        Text("\(stepperValue)")
+                            .fontWeight(.bold)
+                        
+                        Text("+")
+                            .fontWeight(.bold)
+                            .padding(.all, 6)
+                            .foregroundColor(.red)
+                            .background(Circle())
+                            .foregroundColor(.white)
+                            .onTapGesture {
+                               stepperValue += 1
+                            }
+                    }
                     
-                    Text("\(stepperValue)")
-                        .fontWeight(.bold)
-                    
-                    Text("+")
-                        .fontWeight(.bold)
-                        .padding(.all, 6)
-                        .foregroundColor(.red)
-                        .background(Circle())
-                        .foregroundColor(.white)
-                        .onTapGesture {
-                            stepperValue += 1
-                        }
                 }
+                .padding(.leading)
+                .padding(.top)
+                .opacity(stepperValue < 1 ? 0 : 1)
                 
             }
-            .padding(.leading)
-            .padding(.top)
-            .opacity(stepperValue < 1 ? 0 : 1)
-            
         }
+       
     }
-    
-}
+  
+
 
 struct ButtonView: View {
     

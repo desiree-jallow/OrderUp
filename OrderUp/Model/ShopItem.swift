@@ -9,12 +9,12 @@
 import SwiftUI
 
 struct ShopItem: Identifiable {
-    var itemCategory: String
-    var price: Double
-    var id: Int
-    var itemName: String
-    var description: String
-    var imageName: String
+    var itemCategory: String = ""
+    var price: Double = 0
+    var id: Int = 0
+    var itemName: String = ""
+    var description: String = ""
+    var imageName: String = ""
 }
 
 let shopItems: [ShopItem] = [
@@ -31,4 +31,19 @@ let shopItems: [ShopItem] = [
     ShopItem(itemCategory: "Dresses", price: 89, id: 11, itemName: "Dreamy Romance Backless Maxi Dress", description: "Gauzy woven chiffon sweeps across an apron neckline and into a darted bodice with a figure-flattering set-in waist.", imageName: "glam"),
     ShopItem(itemCategory: "Dresses", price: 36.29, id: 12, itemName: "Women's A-Line Dress", description: "Midi Dress Half Sleeve Solid Color Button Summer Hot Casual ", imageName: "a-line")
 ]
-    
+
+let hatsArray = shopItems.filter { (item) -> Bool in
+    item.itemCategory == "Shoes"
+}
+
+let shoesArray = shopItems.filter { (item) -> Bool in
+    item.itemCategory == "Shoes"
+}
+
+let dressesArray = shopItems.filter { (item) -> Bool in
+    item.itemCategory == "Dresses"
+}
+
+let jewelryArray = shopItems.filter { (item) -> Bool in
+    item.itemCategory == "Jewelry"
+}
