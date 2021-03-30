@@ -8,8 +8,11 @@
 import SwiftUI
 
 struct ShopView: View {
+    
     @State private var cartItems: Dictionary<Int,ShopItem> = [:]
     @State private var category = ShopCategory()
+    
+   
     var body: some View {
         VStack {
             NavigationView {
@@ -28,9 +31,13 @@ struct ShopView: View {
                 .offset(x: 10)
                 .navigationBarTitle(Text("Categories"))
                 .navigationBarItems(trailing: CartView(cartItems: cartItems.count))
+                
             }
             
+            
             ItemsView(category: category)
+                
+                
         }
         
     }
@@ -41,6 +48,8 @@ struct ShopView: View {
 struct ItemsView: View {
     @State private var cartItems: Dictionary<Int,ShopItem> = [:]
     @State var items: [ShopItem] = []
+    
+   
     var category: ShopCategory
     var body: some View {
         HStack {
@@ -53,25 +62,30 @@ struct ItemsView: View {
             Spacer()
         }
         
-        List(getItems(for: category)) { item in
-            VStack {
-                HStack(alignment: .top) {
-                    Image(item.imageName)
-                        .resizable()
-                        .aspectRatio(1, contentMode: .fit)
-                        .frame(width: 100, height: 100)
-                        .clipped()
-                        .background(RoundedRectangle(cornerRadius: 10), alignment: .center)
-                        .foregroundColor(.gray)
-                
-                    DescriptionView(item: item)
-                    }
+       ScrollView {
+            ForEach(getItems(for: category)) { item in
+                VStack {
+                    HStack(alignment: .top) {
+                        Image(item.imageName)
+                            .resizable()
+                            .aspectRatio(1, contentMode: .fit)
+                            .frame(width: 100, height: 100)
+                            .clipped()
+                            .background(RoundedRectangle(cornerRadius: 10), alignment: .center)
+                            .foregroundColor(.gray)
                     
+                       DescriptionView(item: item)
+                    
+                        
+                    }
                 }
                 
             }
-            
+
         }
+            
+    }
+    
     private func getItems(for category: ShopCategory) -> [ShopItem] {
         if category.categoryName == "" {
             return shopItems.filter { (item) -> Bool in
@@ -89,10 +103,9 @@ struct ItemsView: View {
 }
 
 struct DescriptionView: View {
-    @State private var showStepper: Bool = false
-    @State private var stepperValue: Int = 0
     var item: ShopItem
     var body: some View {
+        
         VStack(alignment: .leading) {
             VStack(alignment: .leading, spacing: 10) {
                 Text(item.itemName)
@@ -111,18 +124,20 @@ struct DescriptionView: View {
                     .padding(.top)
                     .padding(.trailing)
             
-                ToggleView(showStepper: $showStepper, stepperValue: $stepperValue)
+                ToggleView()
+                    
             }
             .padding(.bottom)
+           
         }
         .frame(width: UIScreen.main.bounds.width / 1.75)
     }
-    
+
 }
 
 struct ToggleView: View {
-    @Binding var showStepper: Bool
-    @Binding var stepperValue: Int
+    @State var stepperValue: Int = 0
+    @State var showStepper: Bool = false
     var body: some View {
       
         if stepperValue < 1 || !showStepper {
@@ -149,7 +164,7 @@ struct ToggleView: View {
                                 if stepperValue > 0 {
                                     stepperValue -= 1
                                 } else {
-                                    showStepper = false
+                                   showStepper = false
                                  
                                 }
                             }
@@ -164,7 +179,7 @@ struct ToggleView: View {
                             .background(Circle())
                             .foregroundColor(.white)
                             .onTapGesture {
-                               stepperValue += 1
+                                stepperValue += 1
                             }
                     }
                     
@@ -177,7 +192,6 @@ struct ToggleView: View {
         }
        
     }
-  
 
 
 struct ButtonView: View {
@@ -232,7 +246,7 @@ struct CategoryView: View {
                     .fontWeight(.bold)
             }
             
-            Image(category.imageName)
+            Image(category.imageName!)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .frame(width: 140, height: 140)

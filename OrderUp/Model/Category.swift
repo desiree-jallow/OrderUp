@@ -8,14 +8,14 @@
 import SwiftUI
 
 struct ShopCategory: Identifiable {
-    var id: Int = 5
+    var id: Int?
     var categoryName: String = ""
-    var imageName: String = ""
+    var imageName: String?
     
 }
 
 let categories: [ShopCategory] = [
-    ShopCategory(id: 1, categoryName: "Hats", imageName: "catHats"),
-    ShopCategory(id: 2, categoryName: "Shoes", imageName: "catShoes"),
-    ShopCategory(id: 3, categoryName: "Jewelry", imageName: "catJewelry"),
-    ShopCategory(id: 4, categoryName: "Dresses", imageName: "catDresses")]
+    ShopCategory(id: 0, categoryName: "Hats", imageName: "catHats"),
+    ShopCategory(id: 1, categoryName: "Shoes", imageName: "catShoes"),
+    ShopCategory(id: 2, categoryName: "Jewelry", imageName: "catJewelry"),
+    ShopCategory(id: 3, categoryName: "Dresses", imageName: "catDresses")]
