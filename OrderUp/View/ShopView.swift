@@ -21,7 +21,7 @@ struct ShopView: View {
                             CategoryView(category: category)
                                 .onTapGesture {
                                     self.category = category
-                                
+                                   
                                 }
                         }
                     }
@@ -33,7 +33,6 @@ struct ShopView: View {
                 
             }
             
-            
             ItemsView(category: category)
         }
         
@@ -44,7 +43,9 @@ struct ShopView: View {
 
 struct ItemsView: View {
     @State private var cartItems: Dictionary<Int,ShopItem> = [:]
-    @State var items: [ShopItem] = []
+    var items: [ShopItem] {
+        getItems(for: category)
+    }
     
     var category: ShopCategory
     var body: some View {
@@ -61,10 +62,10 @@ struct ItemsView: View {
         
         ScrollView(/*@START_MENU_TOKEN@*/.vertical/*@END_MENU_TOKEN@*/, showsIndicators: false, content: {
           
-            ForEach(getItems(for: category).indices) { index in
+            ForEach(items.indices) { index in
                 VStack {
                     HStack(alignment: .top) {
-                        Image(getItems(for: category)[index].imageName)
+                        Image(items[index].imageName)
                             .resizable()
                             .aspectRatio(1, contentMode: .fit)
                             .frame(width: 100, height: 100)
@@ -72,14 +73,16 @@ struct ItemsView: View {
                             .background(RoundedRectangle(cornerRadius: 10), alignment: .center)
                             .foregroundColor(.gray)
                     
-                        DescriptionView(item: shopItems[getItems(for: category)[index].id])
+                        DescriptionView(item: shopItems[items[index].id])
                        
                         
                     }
                 }
                 
             }
+            
         })
+        
     }
     
             
@@ -120,7 +123,7 @@ struct DescriptionView: View {
                     .padding(.top)
                     .padding(.trailing)
                 
-                ToggleView()
+                ToggleView(item: item)
                     
             }
             .padding(.bottom)
@@ -134,7 +137,7 @@ struct DescriptionView: View {
 struct ToggleView: View {
     @State var stepperValue: Int = 0
     @State var showStepper: Bool = false
-//    var item: ShopItem
+    var item: ShopItem
     var body: some View {
       
         if stepperValue < 1 || !showStepper {

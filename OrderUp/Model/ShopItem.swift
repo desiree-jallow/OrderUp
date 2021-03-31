@@ -8,14 +8,16 @@
 
 import SwiftUI
 
-struct ShopItem: Identifiable {
+struct ShopItem: Identifiable, Hashable {
     var itemCategory: String = ""
     var price: Double = 0
     var id: Int = 0
     var itemName: String = ""
     var description: String = ""
     var imageName: String = ""
+    var isSelected: Bool = false
 }
+
 
 let shopItems: [ShopItem] = [
     ShopItem(itemCategory: "Hats", price: 120, id: 0, itemName: "Sierra Boater Hat", description: "Classic boater style wide-brimmed hat featured in a structured design with an embroidered ribbon around the crown.", imageName: "TheSierra1"),
