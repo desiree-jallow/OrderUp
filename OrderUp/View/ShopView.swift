@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct ShopView: View {
-    
     @State private var cartItems: Dictionary<Int,ShopItem> = [:]
     @State private var category = ShopCategory()
     
@@ -36,8 +35,6 @@ struct ShopView: View {
             
             
             ItemsView(category: category)
-                
-                
         }
         
     }
@@ -49,9 +46,9 @@ struct ItemsView: View {
     @State private var cartItems: Dictionary<Int,ShopItem> = [:]
     @State var items: [ShopItem] = []
     
-   
     var category: ShopCategory
     var body: some View {
+        
         HStack {
             
             Text(category.categoryName == "" ? "Hats" : category.categoryName)
@@ -62,11 +59,12 @@ struct ItemsView: View {
             Spacer()
         }
         
-       ScrollView {
-            ForEach(getItems(for: category)) { item in
+        ScrollView(/*@START_MENU_TOKEN@*/.vertical/*@END_MENU_TOKEN@*/, showsIndicators: false, content: {
+          
+            ForEach(getItems(for: category).indices) { index in
                 VStack {
                     HStack(alignment: .top) {
-                        Image(item.imageName)
+                        Image(getItems(for: category)[index].imageName)
                             .resizable()
                             .aspectRatio(1, contentMode: .fit)
                             .frame(width: 100, height: 100)
@@ -74,18 +72,17 @@ struct ItemsView: View {
                             .background(RoundedRectangle(cornerRadius: 10), alignment: .center)
                             .foregroundColor(.gray)
                     
-                       DescriptionView(item: item)
-                    
+                        DescriptionView(item: shopItems[getItems(for: category)[index].id])
+                       
                         
                     }
                 }
                 
             }
-
-        }
-            
+        })
     }
     
+            
     private func getItems(for category: ShopCategory) -> [ShopItem] {
         if category.categoryName == "" {
             return shopItems.filter { (item) -> Bool in
@@ -96,7 +93,6 @@ struct ItemsView: View {
                  item.itemCategory == category.categoryName
             }
         }
-      
         
     }
 
@@ -123,7 +119,7 @@ struct DescriptionView: View {
                     .foregroundColor(.red)
                     .padding(.top)
                     .padding(.trailing)
-            
+                
                 ToggleView()
                     
             }
@@ -138,6 +134,7 @@ struct DescriptionView: View {
 struct ToggleView: View {
     @State var stepperValue: Int = 0
     @State var showStepper: Bool = false
+//    var item: ShopItem
     var body: some View {
       
         if stepperValue < 1 || !showStepper {
@@ -146,7 +143,7 @@ struct ToggleView: View {
                         showStepper = true
                         stepperValue += 1
                     }
-            } else {
+        } else  {
                 ZStack {
                     RoundedRectangle(cornerRadius: 10)
                         .frame(width: 100, height: 35, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
@@ -164,7 +161,7 @@ struct ToggleView: View {
                                 if stepperValue > 0 {
                                     stepperValue -= 1
                                 } else {
-                                   showStepper = false
+                                    showStepper = false
                                  
                                 }
                             }
@@ -190,9 +187,8 @@ struct ToggleView: View {
                 
             }
         }
-       
-    }
 
+    }
 
 struct ButtonView: View {
     
