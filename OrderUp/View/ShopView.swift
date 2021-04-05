@@ -42,11 +42,6 @@ struct ShopView: View {
 
 
 struct ItemsView: View {
-    @State private var cartItems: Dictionary<Int,ShopItem> = [:]
-    var items: [ShopItem] {
-        getItems(for: category)
-    }
-    
     var category: ShopCategory
     var body: some View {
         
@@ -62,42 +57,18 @@ struct ItemsView: View {
         
         ScrollView(/*@START_MENU_TOKEN@*/.vertical/*@END_MENU_TOKEN@*/, showsIndicators: false, content: {
           
-            ForEach(items.indices) { index in
-                VStack {
-                    HStack(alignment: .top) {
-                        Image(items[index].imageName)
-                            .resizable()
-                            .aspectRatio(1, contentMode: .fit)
-                            .frame(width: 100, height: 100)
-                            .clipped()
-                            .background(RoundedRectangle(cornerRadius: 10), alignment: .center)
-                            .foregroundColor(.gray)
-                    
-                        DescriptionView(item: shopItems[items[index].id])
-                       
-                        
-                    }
+            ForEach(shopItems) { item in
+
+                if item.itemCategory == category.categoryName {
+                    DescriptionView(item: shopItems[item.id])
                 }
-                
+        
             }
             
         })
         
     }
     
-            
-    private func getItems(for category: ShopCategory) -> [ShopItem] {
-        if category.categoryName == "" {
-            return shopItems.filter { (item) -> Bool in
-                item.itemCategory == "Hats"
-            }
-        } else {
-            return shopItems.filter { (item) -> Bool in
-                 item.itemCategory == category.categoryName
-            }
-        }
-        
-    }
 
 }
 
@@ -105,46 +76,57 @@ struct DescriptionView: View {
     var item: ShopItem
     var body: some View {
         
-        VStack(alignment: .leading) {
-            VStack(alignment: .leading, spacing: 10) {
-                Text(item.itemName)
-                    .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                
-                Text(item.description)
-                    .foregroundColor(.gray)
-                    .font(.caption)
-            }
+        HStack(alignment: .top) {
+            Image(item.imageName)
+                .resizable()
+                .aspectRatio(1, contentMode: .fit)
+                .frame(width: 100, height: 100)
+                .clipped()
+                .background(RoundedRectangle(cornerRadius: 10), alignment: .center)
+                .foregroundColor(.gray)
             
-            HStack {
-                
-                Text("$\(String(format: "%.2f", item.price))")
-                    .fontWeight(.bold)
-                    .foregroundColor(.red)
-                    .padding(.top)
-                    .padding(.trailing)
-                
-                ToggleView(item: item)
+            VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: 10) {
+                    Text(item.itemName)
+                        .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                     
+                    Text(item.description)
+                        .foregroundColor(.gray)
+                        .font(.caption)
+                }
+                
+                HStack {
+                    
+                    Text("$\(String(format: "%.2f", item.price))")
+                        .fontWeight(.bold)
+                        .foregroundColor(.red)
+                        .padding(.top)
+                        .padding(.trailing)
+                    
+                    ToggleView(item: shopItems[item.id])
+                        
+                }
+                .padding(.bottom)
+               
             }
-            .padding(.bottom)
-           
+            .frame(width: UIScreen.main.bounds.width / 1.75)
         }
-        .frame(width: UIScreen.main.bounds.width / 1.75)
+        
+    
+        
     }
+    
 
 }
 
 struct ToggleView: View {
-    @State var stepperValue: Int = 0
-    @State var showStepper: Bool = false
-    var item: ShopItem
+    @State var item: ShopItem
     var body: some View {
       
-        if stepperValue < 1 || !showStepper {
+        if item.count < 1 {
                 ButtonView()
                     .onTapGesture {
-                        showStepper = true
-                        stepperValue += 1
+                        item.count += 1
                     }
         } else  {
                 ZStack {
@@ -161,15 +143,12 @@ struct ToggleView: View {
                             .background(Circle())
                             .foregroundColor(.white)
                             .onTapGesture {
-                                if stepperValue > 0 {
-                                    stepperValue -= 1
-                                } else {
-                                    showStepper = false
-                                 
+                                if item.count > 0 {
+                                    item.count -= 1
                                 }
                             }
                         
-                        Text("\(stepperValue)")
+                        Text("\(item.count)")
                             .fontWeight(.bold)
                         
                         Text("+")
@@ -179,14 +158,14 @@ struct ToggleView: View {
                             .background(Circle())
                             .foregroundColor(.white)
                             .onTapGesture {
-                                stepperValue += 1
+                                item.count += 1
                             }
                     }
                     
                 }
                 .padding(.leading)
                 .padding(.top)
-                .opacity(stepperValue < 1 ? 0 : 1)
+                .opacity(item.count < 1 ? 0 : 1)
                 
             }
         }

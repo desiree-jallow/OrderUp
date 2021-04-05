@@ -15,7 +15,7 @@ struct ShopItem: Identifiable, Hashable {
     var itemName: String = ""
     var description: String = ""
     var imageName: String = ""
-    var isSelected: Bool = false
+    var count: Int = 0
 }
 
 

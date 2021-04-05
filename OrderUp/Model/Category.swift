@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ShopCategory: Identifiable {
     var id: Int?
-    var categoryName: String = ""
+    var categoryName: String = "Hats"
     var imageName: String?
     
 }
