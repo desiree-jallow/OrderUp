@@ -29,12 +29,19 @@ struct ShopView: View {
                 
                 .offset(x: 10)
                 .navigationBarTitle(Text("Categories"))
-                .navigationBarItems(trailing: CartView(cartItems: cartItems.count))
+                .navigationBarItems(trailing: CartView(cartItems: showCartItem()))
                 
             }
             
             ItemsView(category: category)
         }
+        
+    }
+    
+    
+    private func showCartItem() -> Int {
+        return shopItems.reduce(0, {$0 + $1.count})
+        
         
     }
 
@@ -120,13 +127,14 @@ struct DescriptionView: View {
 }
 
 struct ToggleView: View {
-    @State var item: ShopItem
+    @State var items = shopItems
+    var item: ShopItem
     var body: some View {
       
-        if item.count < 1 {
+        if shopItems[item.id].count < 1 {
                 ButtonView()
                     .onTapGesture {
-                        item.count += 1
+                        shopItems[item.id].count += 1
                     }
         } else  {
                 ZStack {
@@ -143,8 +151,8 @@ struct ToggleView: View {
                             .background(Circle())
                             .foregroundColor(.white)
                             .onTapGesture {
-                                if item.count > 0 {
-                                    item.count -= 1
+                                if shopItems[item.id].count > 0 {
+                                    shopItems[item.id].count -= 1
                                 }
                             }
                         
@@ -158,14 +166,14 @@ struct ToggleView: View {
                             .background(Circle())
                             .foregroundColor(.white)
                             .onTapGesture {
-                                item.count += 1
+                                shopItems[item.id].count += 1
                             }
                     }
                     
                 }
                 .padding(.leading)
                 .padding(.top)
-                .opacity(item.count < 1 ? 0 : 1)
+                .opacity(shopItems[item.id].count < 1 ? 0 : 1)
                 
             }
         }
