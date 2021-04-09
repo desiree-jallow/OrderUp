@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct ShopView: View {
-    @State private var cartItems: Dictionary<Int,ShopItem> = [:]
     @State private var category = ShopCategory()
     
    
@@ -64,11 +63,11 @@ struct ItemsView: View {
         
         ScrollView(/*@START_MENU_TOKEN@*/.vertical/*@END_MENU_TOKEN@*/, showsIndicators: false, content: {
           
-            ForEach(shopItems) { item in
+            ForEach(showItems(category: category)) { item in
 
-                if item.itemCategory == category.categoryName {
-                    DescriptionView(item: shopItems[item.id])
-                }
+                
+                DescriptionView(item: item)
+                
         
             }
             
@@ -76,7 +75,25 @@ struct ItemsView: View {
         
     }
     
+    private func showItems(category: ShopCategory) -> [ShopItem] {
+        var items = [ShopItem]()
+        switch category.categoryName {
+        case "Hats":
+            items = shopItems.filter {$0.itemCategory == "Hats"}
+        case "Shoes":
+            items = shopItems.filter {$0.itemCategory == "Shoes"}
+        case "Jewelry":
+            items = shopItems.filter {$0.itemCategory == "Jewelry"}
+        case "Dresses":
+            items = shopItems.filter {$0.itemCategory == "Dresses"}
+        
+        default:
+            break
+        }
+       return items
+    }
 
+        
 }
 
 struct DescriptionView: View {
@@ -131,9 +148,10 @@ struct ToggleView: View {
     var item: ShopItem
     var body: some View {
       
-        if shopItems[item.id].count < 1 {
+        if items[item.id].count < 1 {
                 ButtonView()
                     .onTapGesture {
+                        items[item.id].count += 1
                         shopItems[item.id].count += 1
                     }
         } else  {
@@ -151,12 +169,13 @@ struct ToggleView: View {
                             .background(Circle())
                             .foregroundColor(.white)
                             .onTapGesture {
-                                if shopItems[item.id].count > 0 {
+                                if items[item.id].count > 0 {
+                                    items[item.id].count -= 1
                                     shopItems[item.id].count -= 1
                                 }
                             }
                         
-                        Text("\(item.count)")
+                        Text("\(items[item.id].count)")
                             .fontWeight(.bold)
                         
                         Text("+")
@@ -166,6 +185,7 @@ struct ToggleView: View {
                             .background(Circle())
                             .foregroundColor(.white)
                             .onTapGesture {
+                                items[item.id].count += 1
                                 shopItems[item.id].count += 1
                             }
                     }
@@ -173,7 +193,7 @@ struct ToggleView: View {
                 }
                 .padding(.leading)
                 .padding(.top)
-                .opacity(shopItems[item.id].count < 1 ? 0 : 1)
+                .opacity(items[item.id].count < 1 ? 0 : 1)
                 
             }
         }
