@@ -9,8 +9,6 @@ import SwiftUI
 
 struct ShopView: View {
     @State private var category = ShopCategory()
-    
-   
     var body: some View {
         VStack {
             NavigationView {
@@ -43,6 +41,7 @@ struct ShopView: View {
         
         
     }
+    
 
 }
 
@@ -153,6 +152,8 @@ struct ToggleView: View {
                     .onTapGesture {
                         items[item.id].count += 1
                         shopItems[item.id].count += 1
+                        
+                       
                     }
         } else  {
                 ZStack {
@@ -172,6 +173,7 @@ struct ToggleView: View {
                                 if items[item.id].count > 0 {
                                     items[item.id].count -= 1
                                     shopItems[item.id].count -= 1
+                                   
                                 }
                             }
                         
@@ -187,13 +189,14 @@ struct ToggleView: View {
                             .onTapGesture {
                                 items[item.id].count += 1
                                 shopItems[item.id].count += 1
+                                
                             }
                     }
                     
                 }
                 .padding(.leading)
                 .padding(.top)
-                .opacity(items[item.id].count < 1 ? 0 : 1)
+                .opacity(shopItems[item.id].count < 1 ? 0 : 1)
                 
             }
         }
@@ -219,6 +222,7 @@ struct ButtonView: View {
 
 struct CartView: View {
     var cartItems: Int
+   
     var body: some View {
         ZStack {
             Image("cart")
@@ -238,6 +242,7 @@ struct CartView: View {
             .opacity(cartItems > 0 ? 1.0 : 0)
         }
     }
+    
 }
 
 struct CategoryView: View {

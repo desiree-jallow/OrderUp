@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct ShopItem: Identifiable {
+struct ShopItem: Identifiable,Hashable {
     var itemCategory: String = ""
     var price: Double = 0
     var id: Int = 0
@@ -43,18 +43,3 @@ var shopItems: [ShopItem] = [
     ShopItem(itemCategory: "Dresses", price: 36.29, id: 11, itemName: "Women's A-Line Dress", description: "Midi Dress Half Sleeve Solid Color Button Summer Hot Casual ", imageName: "a-line", count: 0)
 ]
 
-let hatsArray = shopItems.filter { (item) -> Bool in
-    item.itemCategory == "Shoes"
-}
-
-let shoesArray = shopItems.filter { (item) -> Bool in
-    item.itemCategory == "Shoes"
-}
-
-let dressesArray = shopItems.filter { (item) -> Bool in
-    item.itemCategory == "Dresses"
-}
-
-let jewelryArray = shopItems.filter { (item) -> Bool in
-    item.itemCategory == "Jewelry"
-}
