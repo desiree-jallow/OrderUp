@@ -43,3 +43,4 @@ var shopItems: [ShopItem] = [
     ShopItem(itemCategory: "Dresses", price: 36.29, id: 11, itemName: "Women's A-Line Dress", description: "Midi Dress Half Sleeve Solid Color Button Summer Hot Casual ", imageName: "a-line", count: 0)
 ]
 
+

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ShopView: View {
     @State private var category = ShopCategory()
+    @State private var cartItems = 0
     var body: some View {
         VStack {
             NavigationView {
@@ -18,35 +19,40 @@ struct ShopView: View {
                             CategoryView(category: category)
                                 .onTapGesture {
                                     self.category = category
-                                   
+                    
                                 }
                         }
                     }
                 })
-                
                 .offset(x: 10)
                 .navigationBarTitle(Text("Categories"))
-                .navigationBarItems(trailing: CartView(cartItems: showCartItem()))
+                .navigationBarItems(trailing: CartView(cartItems: cartItems))
                 
             }
             
             ItemsView(category: category)
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    showCartItem()
+                    print(cartItems)
+                }
         }
         
     }
     
     
-    private func showCartItem() -> Int {
-        return shopItems.reduce(0, {$0 + $1.count})
-        
-        
+    private func showCartItem() {
+        cartItems = shopItems.reduce(0, {$0 + $1.count})
+
     }
     
-
+    
+    
 }
 
 
 struct ItemsView: View {
+
     var category: ShopCategory
     var body: some View {
         
@@ -96,6 +102,7 @@ struct ItemsView: View {
 }
 
 struct DescriptionView: View {
+
     var item: ShopItem
     var body: some View {
         
@@ -128,7 +135,10 @@ struct DescriptionView: View {
                     
                     ToggleView(item: shopItems[item.id])
                         
+                        
+                        
                 }
+                .contentShape(Rectangle())
                 .padding(.bottom)
                
             }
@@ -159,7 +169,9 @@ struct ToggleView: View {
                 ZStack {
                     RoundedRectangle(cornerRadius: 10)
                         .frame(width: 100, height: 35, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                        .contentShape(Rectangle())
                         .foregroundColor(Color(.lightGray))
+                        
                     
                     HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 15)
                     {
@@ -173,7 +185,6 @@ struct ToggleView: View {
                                 if items[item.id].count > 0 {
                                     items[item.id].count -= 1
                                     shopItems[item.id].count -= 1
-                                   
                                 }
                             }
                         
@@ -195,10 +206,11 @@ struct ToggleView: View {
                     
                 }
                 .padding(.leading)
-                .padding(.top)
+                .offset(x: 8, y: 5)
                 .opacity(shopItems[item.id].count < 1 ? 0 : 1)
-                
+                .contentShape(Rectangle())
             }
+        
         }
 
     }
@@ -212,9 +224,11 @@ struct ButtonView: View {
             .font(.body)
             .background(Rectangle())
             .cornerRadius(10)
-            .frame(width: 120, height: 10, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+            .frame(width: 120, height: 40, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+            .contentShape(Rectangle())
             .foregroundColor(.red)
-            .offset(x: 10, y: 10)
+            .offset(x: 10, y: 5)
+           
         
     }
     
