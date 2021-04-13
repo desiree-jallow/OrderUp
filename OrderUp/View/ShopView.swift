@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ShopView: View {
     @State private var category = ShopCategory()
-    @State private var cartItems = 0
+    @StateObject private var myItem = Item()
     var body: some View {
         VStack {
             NavigationView {
@@ -26,23 +26,19 @@ struct ShopView: View {
                 })
                 .offset(x: 10)
                 .navigationBarTitle(Text("Categories"))
-                .navigationBarItems(trailing: CartView(cartItems: cartItems))
+                .navigationBarItems(trailing: CartView(cartItems: showCartItem()))
                 
             }
             
-            ItemsView(category: category)
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    showCartItem()
-                    print(cartItems)
-                }
+            ItemsView(myItem: myItem, category: category)
+                
         }
         
     }
     
     
-    private func showCartItem() {
-        cartItems = shopItems.reduce(0, {$0 + $1.count})
+    private func showCartItem() -> Int {
+        return myItem.shopItems.reduce(0, {$0 + $1.count})
 
     }
     
@@ -52,6 +48,7 @@ struct ShopView: View {
 
 
 struct ItemsView: View {
+    @ObservedObject var myItem: Item
 
     var category: ShopCategory
     var body: some View {
@@ -71,7 +68,7 @@ struct ItemsView: View {
             ForEach(showItems(category: category)) { item in
 
                 
-                DescriptionView(item: item)
+                DescriptionView(myItem: myItem, item: item)
                 
         
             }
@@ -84,13 +81,13 @@ struct ItemsView: View {
         var items = [ShopItem]()
         switch category.categoryName {
         case "Hats":
-            items = shopItems.filter {$0.itemCategory == "Hats"}
+            items = myItem.shopItems.filter {$0.itemCategory == "Hats"}
         case "Shoes":
-            items = shopItems.filter {$0.itemCategory == "Shoes"}
+            items = myItem.shopItems.filter {$0.itemCategory == "Shoes"}
         case "Jewelry":
-            items = shopItems.filter {$0.itemCategory == "Jewelry"}
+            items = myItem.shopItems.filter {$0.itemCategory == "Jewelry"}
         case "Dresses":
-            items = shopItems.filter {$0.itemCategory == "Dresses"}
+            items = myItem.shopItems.filter {$0.itemCategory == "Dresses"}
         
         default:
             break
@@ -102,7 +99,7 @@ struct ItemsView: View {
 }
 
 struct DescriptionView: View {
-
+    @ObservedObject var myItem: Item
     var item: ShopItem
     var body: some View {
         
@@ -133,7 +130,7 @@ struct DescriptionView: View {
                         .padding(.top)
                         .padding(.trailing)
                     
-                    ToggleView(item: shopItems[item.id])
+                    ToggleView(myItem: myItem, item: myItem.shopItems[item.id])
                         
                         
                         
@@ -153,15 +150,15 @@ struct DescriptionView: View {
 }
 
 struct ToggleView: View {
-    @State var items = shopItems
+    @ObservedObject var myItem: Item
     var item: ShopItem
     var body: some View {
       
-        if items[item.id].count < 1 {
+        if myItem.shopItems[item.id].count < 1 {
                 ButtonView()
                     .onTapGesture {
-                        items[item.id].count += 1
-                        shopItems[item.id].count += 1
+                        myItem.shopItems[item.id].count += 1
+//                        shopItems[item.id].count += 1
                         
                        
                     }
@@ -182,13 +179,14 @@ struct ToggleView: View {
                             .background(Circle())
                             .foregroundColor(.white)
                             .onTapGesture {
-                                if items[item.id].count > 0 {
-                                    items[item.id].count -= 1
-                                    shopItems[item.id].count -= 1
+                                if myItem.shopItems[item.id].count > 0 {
+                                    myItem.shopItems[item.id].count -= 1
+//                                    shopItems[item.id].count -= 1
+                                    
                                 }
                             }
                         
-                        Text("\(items[item.id].count)")
+                        Text("\(myItem.shopItems[item.id].count)")
                             .fontWeight(.bold)
                         
                         Text("+")
@@ -198,8 +196,9 @@ struct ToggleView: View {
                             .background(Circle())
                             .foregroundColor(.white)
                             .onTapGesture {
-                                items[item.id].count += 1
-                                shopItems[item.id].count += 1
+                                myItem.shopItems[item.id].count += 1
+//                                shopItems[item.id].count += 1
+                            
                                 
                             }
                     }
@@ -207,7 +206,7 @@ struct ToggleView: View {
                 }
                 .padding(.leading)
                 .offset(x: 8, y: 5)
-                .opacity(shopItems[item.id].count < 1 ? 0 : 1)
+                .opacity(myItem.shopItems[item.id].count < 1 ? 0 : 1)
                 .contentShape(Rectangle())
             }
         
@@ -215,8 +214,25 @@ struct ToggleView: View {
 
     }
 
+class Item : ObservableObject {
+  @Published  var shopItems: [ShopItem] = [
+        ShopItem(itemCategory: "Hats", price: 120, id: 0, itemName: "Sierra Boater Hat", description: "Classic boater style wide-brimmed hat featured in a structured design with an embroidered ribbon around the crown.", imageName: "TheSierra1"),
+        ShopItem(itemCategory: "Hats", price: 130, id: 1, itemName: "Diamond Crown Felt Hat", description: "Classic wool felt hat featuring a turned up wide brim with a velvet ribbon around the crown.", imageName: "diamond", count: 0),
+        ShopItem(itemCategory: "Hats", price: 130, id: 2, itemName: "Rancher Felt Hat", description: "Top things off with this structured Australian wool hat featured in a round brim design with a ribbon on the crown.", imageName: "rancher", count: 0),
+        ShopItem(itemCategory: "Shoes", price: 145, id: 3, itemName: "Karhu Suede Fusion 2.0 Lace-Up Sneakers", description: "First introduced in 1996, these suede sneakers combine a classic palette with high-tech construction.", imageName: "fusion", count: 0),
+        ShopItem(itemCategory: "Shoes", price: 47.99, id: 4, itemName: "Sidewalk Low-Top Sneaker", description: "Made of color-block leather, they have MWL Cloud-lift insoles for a super-cushy, ultra-supportive fit that feels like walking on a...well, you know.", imageName: "sidewalk", count: 0),
+        ShopItem(itemCategory: "Shoes", price: 110, id: 5, itemName: "Kickoff Trainer Sneakers", description: "Our very first trainers have MWL Cloud-lift insoles for a super-cushy, ultra-supportive fit that feels like walking on a...well, you know.", imageName: "kickoff", count: 0),
+        ShopItem(itemCategory: "Jewelry", price: 58, id: 6, itemName: "Emilie Gold Multi Strand Necklace", description: "Mini versions of our most iconic silhouettes and delicate Chains put us in the freshly-showered-sun-soaked-warm-kinda mood.", imageName: "emilie", count: 0),
+        ShopItem(itemCategory: "Jewelry", price: 48, id: 7, itemName: "Ari Heart Gold Pendant Necklace", description: "Feminine and classic with an asymmetrical design, the Ari Heart Gold Pendant Necklace in Rose Quartz is our new obsession.", imageName: "heart", count: 0),
+        ShopItem(itemCategory: "Jewelry", price: 110, id: 8, itemName: "Tegan Y Necklace", description: "All about shape and movement, this Gold necklace is playful yet sophisticated.", imageName: "tegan", count: 0),
+        ShopItem(itemCategory: "Dresses", price: 68, id: 9, itemName: "Puff Sleeve Button Front Midi Dress", description: "Lightweight woven fabric creates a flattering V-neckline and a fitted bodice, framed by short puffy sleeves with elastic cuffs.", imageName: "white", count: 0),
+        ShopItem(itemCategory: "Dresses", price: 89, id: 10, itemName: "Dreamy Romance Backless Maxi Dress", description: "Gauzy woven chiffon sweeps across an apron neckline and into a darted bodice with a figure-flattering set-in waist.", imageName: "glam", count: 0),
+        ShopItem(itemCategory: "Dresses", price: 36.29, id: 11, itemName: "Women's A-Line Dress", description: "Midi Dress Half Sleeve Solid Color Button Summer Hot Casual ", imageName: "a-line", count: 0)
+    ]
+
+}
+
 struct ButtonView: View {
-    
     var body: some View {
         Text("add to cart")
             .padding(.all, 6.0)
@@ -228,8 +244,6 @@ struct ButtonView: View {
             .contentShape(Rectangle())
             .foregroundColor(.red)
             .offset(x: 10, y: 5)
-           
-        
     }
     
 }
@@ -256,6 +270,7 @@ struct CartView: View {
             .opacity(cartItems > 0 ? 1.0 : 0)
         }
     }
+   
     
 }
 
